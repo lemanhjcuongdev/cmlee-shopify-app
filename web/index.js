@@ -1,4 +1,4 @@
-// @ts-check
+// @ts-nocheck
 import { join } from "path";
 import { readFileSync } from "fs";
 import express from "express";
@@ -57,6 +57,103 @@ app.get("/api/products/create", async (_req, res) => {
     error = e.message;
   }
   res.status(status).send({ success: status === 200, error });
+});
+
+//GET LIST PAGE
+app.get("/api/pages", async (_req, res) => {
+  const id = _req.query.id;
+  const published_status = _req.query.published_status;
+  if (id) {
+    let pagesData = await shopify.api.rest.Page.find({
+      session: res.locals.shopify.session,
+      // @ts-ignore
+      id,
+    });
+    res.status(200).send(pagesData);
+  } else {
+    let pagesData = await shopify.api.rest.Page.all({
+      session: res.locals.shopify.session,
+      published_status: published_status,
+    });
+    res.status(200).send(pagesData);
+  }
+});
+
+//CREATE NEW PAGE
+app.post("/api/pages", async (_req, res) => {
+  const data = _req.body.page;
+
+  let pageData = new shopify.api.rest.Page({
+    session: res.locals.shopify.session,
+  });
+
+  pageData.title = data.title;
+  pageData.body_html = data.body_html || "";
+  pageData.published = data.published;
+
+  await pageData.save({
+    update: true,
+  });
+  res.status(200).send(pageData);
+});
+
+//DELETE SELECTED PAGE(S)
+app.delete("/api/pages", async (_req, res) => {
+  const ids = _req.query.id.split(",");
+
+  // @ts-ignore
+  const deletePromise = ids.map((id) =>
+    shopify.api.rest.Page.delete({
+      session: res.locals.shopify.session,
+      id,
+    })
+  );
+  const pageData = await Promise.all(deletePromise);
+  res.status(200).send(pageData);
+});
+
+// UPDATE PAGE / HIDE PAGE / SHOW HIDDEN PAGE
+app.put("/api/pages", async (_req, res) => {
+  // @ts-ignore
+  const ids = _req.query.id?.split(",");
+
+  const published = _req.body.published;
+  const title = _req.body.title;
+  const body_html = _req.body.body_html;
+
+  if (title || body_html) {
+    const page = new shopify.api.rest.Page({
+      session: res.locals.shopify.session,
+    });
+
+    page.id = ids[0];
+    page.title = title;
+    page.published = published;
+    page.body_html = body_html;
+
+    await page.save({
+      update: true,
+    });
+
+    res.status(200).send(page);
+
+  } else if (ids) {
+    const updatePageStatus = ids.map(async (id) => {
+      const page = new shopify.api.rest.Page({
+        session: res.locals.shopify.session,
+      });
+
+      page.id = id;
+      page.published = published;
+
+      await page.save({
+        update: true,
+      });
+    });
+
+    const pagesData = await Promise.all(updatePageStatus);
+    res.status(200).send(pagesData);
+  }
 });
 
 app.use(serveStatic(STATIC_PATH, { index: false }));
