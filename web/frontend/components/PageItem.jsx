@@ -1,15 +1,14 @@
 import { Badge, Text } from "@shopify/polaris";
 import React, { useEffect, useState } from "react";
 import { DateConverter } from "../utils/DateConverter";
+import { HTMLEncoder } from "../utils/HTMLEncoder";
 // import { parserHTML } from "../ulities/parserHTML";
 
 function PageItem({ title, body_html, created_at, published_at }) {
   const [contentBody, setContentBody] = useState("");
   useEffect(() => {
-    // const content = parserHTML(body_html);
-
-    // setContentBody(content);
-    setContentBody(body_html);
+    //html to string conversion
+    setContentBody(HTMLEncoder(body_html));
   }, []);
 
   return (

@@ -26,6 +26,7 @@ import ModalComponent from "../components/ModalComponent";
 import VisibilityDatePicker from "../components/VisibilityDatePicker";
 import VisibilityTimePicker from "../components/VisibilityTimePicker";
 import ToastMessage from "../components/ToastMessage";
+import EditPageSkeleton from "../components/EditPageSkeleton";
 
 function AddPage() {
   const fetch = useAuthenticatedFetch();
@@ -41,7 +42,7 @@ function AddPage() {
   const [initVisible, setInitVisible] = useState([]);
   const [isSetDate, setIsSetDate] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [confirmModal, setConfirmModal] = useState({
     isOpen: false,
     title: "",
@@ -149,6 +150,8 @@ function AddPage() {
     } else console.log("Can't delete!");
   };
 
+  if (loading) return <EditPageSkeleton />;
+
   return (
     <Page
       backAction={{
@@ -181,10 +184,7 @@ function AddPage() {
         {
           content: "Preview page",
           icon: ViewMajor,
-          onAction: () =>
-            navigate(
-              `https://lemanhcuong.myshopify.com/pages/${initData.handle}`
-            ),
+          url: `https://lemanhcuong.myshopify.com/pages/${initData.handle}`,
         },
       ]}
       pagination={[
@@ -324,6 +324,7 @@ function AddPage() {
             onClick={handleUpdatePage}
             disabled={
               title.trim() !== initData?.title ||
+              content.trim() !== initData?.body_html ||
               visibleStatus.toString() !== initVisible.toString()
                 ? false
                 : true

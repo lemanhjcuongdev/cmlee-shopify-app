@@ -1,5 +1,6 @@
 import { LegacyCard, Text, TextField } from "@shopify/polaris";
 import { useEffect, useState } from "react";
+import { HTMLEncoder } from "../utils/HTMLEncoder";
 
 function SearchEngine({ title, content }) {
   const [editWithSeo, setEditWithSeo] = useState(false);
@@ -47,7 +48,7 @@ function SearchEngine({ title, content }) {
               color="success"
               as="h6"
             >{`https://lemanhcuong.myshopify.com/pages/${url}`}</Text>
-            <p style={{ fontSize: "13px" }}>{description}</p>
+            <p style={{ fontSize: "13px" }}>{HTMLEncoder(description)}</p>
           </div>
         ) : (
           `Add ${

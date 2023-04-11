@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Tag, TextField } from "@shopify/polaris";
 import { useState, useCallback } from "react";
 
-function TextFilter({ tagname, togglePopoverSaveActive }) {
+function TextFilter({ tagname, togglePopoverSaveActive, handleClearAll }) {
   const [textFieldValue, setTextFieldValue] = useState("");
 
   const handleTextFieldChange = useCallback(
@@ -36,11 +36,21 @@ function TextFilter({ tagname, togglePopoverSaveActive }) {
           marginTop: "12px",
         }}
       >
-        <Button onClick={togglePopoverSaveActive}>Cancel</Button>
+        <Button
+          onClick={() => {
+            togglePopoverSaveActive();
+            handleClearAll();
+          }}
+        >
+          Cancel
+        </Button>
         <Button
           primary
           disabled={textFieldValue.trim() !== "" ? false : true}
-          onClick={togglePopoverSaveActive}
+          onClick={() => {
+            togglePopoverSaveActive();
+            handleClearAll();
+          }}
         >
           Save filters
         </Button>

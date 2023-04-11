@@ -99,7 +99,7 @@ function AddPage() {
             message: "Page was created",
           });
 
-          // navigate(`/${data.id}`);
+          navigate(`/${data.id}`);
         })
         .catch((err) => {
           console.log(err);
@@ -146,7 +146,7 @@ function AddPage() {
                 label="Title"
                 type="text"
                 placeholder="e.g. Contact us, Sizing chart, FAQs"
-                error={isError ? "Store name is required" : null}
+                error={isError ? "Title can't be blank" : null}
               />
               <ContentEditor
                 content={content}

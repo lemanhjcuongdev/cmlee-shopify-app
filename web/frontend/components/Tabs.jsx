@@ -27,6 +27,7 @@ import TextFilter from "./TextFilter";
 
 function TabsComponent() {
   const fetch = useAuthenticatedFetch();
+
   const [isLoading, setLoading] = useState(false);
   const [selected, setSelected] = useState(0);
   const [queryValue, setQueryValue] = useState("");
@@ -78,6 +79,7 @@ function TabsComponent() {
           );
         } else remainingData = [...data];
 
+        //thu tu
         sortPages(remainingData, sortList.toString());
 
         setPageData(remainingData);
@@ -336,6 +338,7 @@ function TabsComponent() {
               <TextFilter
                 tagname={visibility}
                 togglePopoverSaveActive={togglePopoverSaveActive}
+                handleClearAll={handleClearAll}
               />
             </div>
           </Popover.Pane>
