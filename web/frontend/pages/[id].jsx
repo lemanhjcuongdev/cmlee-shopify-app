@@ -61,7 +61,6 @@ function AddPage() {
     url: `/api/pages?id=${id}`,
     reactQueryOptions: {
       onSuccess: (page) => {
-        console.log(page);
         setInitData(page);
         setTitle(page.title);
         setContent(page.body_html);

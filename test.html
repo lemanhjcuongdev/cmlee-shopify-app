@@ -11,14 +11,17 @@
     <script>
       const pEl = document.querySelector("#pii");
 
-      let range = new Range();
-      range.setStart(pEl.firstChild, 2);
-      range.setEnd(pEl.firstChild, 4);
+      //   let range = new Range();
+      //   range.setStart(pEl.firstChild, 2);
+      //   range.setEnd(pEl.firstChild, 4);
 
       // toString of a range returns its content as text
       //   console.log(JSON.stringify({ range })); // ll
-      alert(range);
-      console.log(range); 
+      //   alert(range);
+      //   console.log(range);
+      pEl.addEventListener("mouseup", () => {
+        console.log(window.getSelection());
+      });
     </script>
   </body>
 </html>

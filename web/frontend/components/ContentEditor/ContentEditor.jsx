@@ -32,14 +32,14 @@ function ContentEditor({ editorRef, content, handleContentChange }) {
   const [activePickColor, setActivePickColor] = useState(false);
   const [tabColor, setTabColor] = useState(0);
   const [color, setColor] = useState({
-    hue: 120,
-    brightness: 1,
-    saturation: 1,
+    hue: 0,
+    brightness: 0,
+    saturation: 0,
   });
   const [bgColor, setBgColor] = useState({
-    hue: 120,
+    hue: 0,
     brightness: 1,
-    saturation: 1,
+    saturation: 0,
   });
 
   //fill existing content in text editor
@@ -57,36 +57,81 @@ function ContentEditor({ editorRef, content, handleContentChange }) {
     </Tooltip>
   );
   const handleChangeHeadingType = (command) => {
+    const selection = window.getSelection();
+
+    const newElement = document.createElement(command);
+    newElement.innerHTML = selection.toString();
+
+    newElement.style.fontSize = "initial";
+    newElement.style.fontWeight = "initial";
+
+    const range = selection.getRangeAt(0);
+    console.log(range.commonAncestorContainer.parentNode.nodeName);
+    if (range.commonAncestorContainer.parentNode.nodeName === "DIV") {
+      range.deleteContents();
+      range.insertNode(newElement);
+    } else {
+      range.commonAncestorContainer.parentNode.replaceWith(
+        //replace parent node with new element
+        newElement
+      );
+    }
+
     editorRef.current.focus();
   };
 
   const handleTextDecoration = (command) => {
-    const newText = document.createElement("p");
-    // newText.innerHTML = window.getSelection().anchorNode.textContent;
-    newText.innerHTML = editorRef.current.innerHTML;
+    const selection = window.getSelection();
+    if (selection.rangeCount > 0) {
+      const range = selection?.getRangeAt(0);
+      if (range.commonAncestorContainer.nodeType === 3) {
+        //if node type is text
+        switch (command) {
+          case "bold":
+            {
+              if (range.commonAncestorContainer.parentNode.nodeName === "B") {
+                //if node name is b tag -> remove bold text
+                range.commonAncestorContainer.parentNode.replaceWith(
+                  //replace parent node with selected string
+                  selection.toString()
+                );
+              } else {
+                const boldElement = document.createElement("b");
+                range.surroundContents(boldElement); //placing new node at start of range
+              }
+            }
 
-    switch (command) {
-      case "bold":
-        {
-          newText.style.fontWeight = "bold";
+            break;
+          case "italic":
+            {
+              if (range.commonAncestorContainer.parentNode.nodeName === "I") {
+                range.commonAncestorContainer.parentNode.replaceWith(
+                  selection.toString()
+                );
+              } else {
+                const italicElement = document.createElement("i");
+                range.surroundContents(italicElement);
+              }
+            }
+
+            break;
+          case "underline":
+            {
+              if (range.commonAncestorContainer.parentNode.nodeName === "U") {
+                range.commonAncestorContainer.parentNode.replaceWith(
+                  selection.toString()
+                );
+              } else {
+                const underlineElement = document.createElement("u");
+                range.surroundContents(underlineElement);
+              }
+            }
+
+            break;
         }
-        break;
-      case "italic":
-        {
-          newText.style.fontStyle = "italic";
-        }
-        break;
-      case "underline":
-        {
-          newText.style.textDecoration = "underline";
-        }
-        break;
+      }
     }
 
-    editorRef.current.innerHTML = "";
-    editorRef.current.appendChild(newText);
-    console.log(editorRef.current);
-    console.log(newText);
     editorRef.current.focus();
   };
 
@@ -156,42 +201,49 @@ function ContentEditor({ editorRef, content, handleContentChange }) {
                         content: "Paragraph",
                         onAction: () => {
                           setActiveHeading(false);
+                          handleChangeHeadingType("p");
                         },
                       },
                       {
                         content: "Heading 1",
                         onAction: () => {
                           setActiveHeading(false);
+                          handleChangeHeadingType("h1");
                         },
                       },
                       {
                         content: "Heading 2",
                         onAction: () => {
                           setActiveHeading(false);
+                          handleChangeHeadingType("h2");
                         },
                       },
                       {
                         content: "Heading 3",
                         onAction: () => {
                           setActiveHeading(false);
+                          handleChangeHeadingType("h3");
                         },
                       },
                       {
                         content: "Heading 4",
                         onAction: () => {
                           setActiveHeading(false);
+                          handleChangeHeadingType("h4");
                         },
                       },
                       {
                         content: "Heading 5",
                         onAction: () => {
                           setActiveHeading(false);
+                          handleChangeHeadingType("h5");
                         },
                       },
                       {
                         content: "Heading 6",
                         onAction: () => {
                           setActiveHeading(false);
+                          handleChangeHeadingType("h6");
                         },
                       },
                     ]}

@@ -13,6 +13,7 @@ function SearchEngine({ title, content }) {
   useEffect(() => {
     setTitleSEO(title);
     setDescription(content);
+    setUrl(title);
   }, [title, content]);
 
   const handleTitleSEOChange = (value) => {
